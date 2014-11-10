@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Item {{ item.item_id }}{% endblock %}
+
+{% block content %}
+{% if item %}
+    <p>{{ item }}</p>
+    <p><img src="{{ item.icon }}"></p>
+    <p>Description: {{ item.description }}</p>
+    <p>Type: {{ item.type }}</p>
+    <p>Rarity: {{ item.rarity }}</p>
+    <p>Level: {{ item.level }}</p>
+    <p>Vendor value: {{ item.vendor_value }}</p>
+    <p>Flags: {{ item.flags }}</p>
+    <p>Game types: {{ item.game_types }}</p>
+    <p>Restrictions: {{ item.restrictions }}
+    <p>Details: {{ item.details }}</p>
+    <p>Profit: {{ item.profit }} bronze ({{ item.profit_percent }}%)</p>
+    {% if item.market %}
+        <p>Sell quantity: {{ item.market.sell_quantity }}</p>
+        <p>Buy quantity: {{ item.market.buy_quantity }}</p>
+        <p>Sell price: {{ item.market.sell_price }}</p>
+        <p>Buy price: {{ item.market.buy_price }}</p>
+        <p>Last updated: {{ item.market.last_updated }}</p>
+    {% endif %}
+{% else %}
+    <p>Item not found.</p>
+{% endif %}
+{% endblock %}

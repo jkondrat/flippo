@@ -1,0 +1,31 @@
+#menu li {
+    display: inline;
+}
+
+#content {
+}
+
+.inline > * {
+    display: inline;
+}
+
+.rotate {
+animation-name: rotateThis;
+animation-duration: 1.6s;
+animation-iteration-count: infinite;
+animation-timing-function: linear;
+}
+
+@keyframes rotateThis {
+from { transform: scale( 1 ) rotate( 0deg ); }
+to { transform: scale( 1 ) rotate( 360deg ); }
+}
+
+.pagination {
+    margin: 0 0;
+}
+
+.form-inline .input-group {
+    width: 200px !important;
+    margin: 0 2px 4px 0;
+}

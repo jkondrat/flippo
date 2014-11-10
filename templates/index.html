@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="panel-body">
+    <script type="text/javascript">
+       var q = "{{ request.GET.q }}";
+       var type = "{{ request.GET.type }}";
+       var count = "{{ request.GET.count }}";
+       var buy_price = "{{ request.GET.buy_price }}";
+    </script>
+    <form method="GET" class="form-inline" id="filter">
+        <div class="input-group">
+            <span>Name:</span>
+            <input name="q" name="q" type="text" class="form-control" value="{{ request.GET.q }}">
+        </div>
+        <div class="input-group">
+            <span>Type:</span>
+            <input name="type" name="type" type="text" class="form-control" value="{{ request.GET.type }}">
+        </div>
+        <div class="input-group">
+            <span>Count higher:</span>
+            <input name="count" name="count" type="text" class="form-control" value="{{ request.GET.count }}">
+        </div>
+        <div class="input-group">
+            <span>Buy price higher (copper):</span>
+            <input id="buy_price" name="buy_price" type="text" class="form-control" value="{{ request.GET.buy_price }}">
+        </div>
+        <span class="input-group-btn">
+            <input class="btn btn-primary" type="submit" value="Search">
+            <input class="btn btn-default" type="submit" id="clear" value="Clear">
+        </span>
+    </form>
+    <span class="pull-right">{% include "paginator.html" %}</span>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Profit</th>
+            <th>%</th>
+            <th>Sell price</th>
+            <th>Buy price</th>
+            <th>Count</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td><a href="/items/{{ item.item_id }}/">{{ item }}</a></td>
+            <td>{{ item.type }}</td>
+            <td class="commaSeparated">{{ item.profit }}</td>
+            <td>{{ item.profit_percent }}</td>
+            <td class="commaSeparated">{% if item.market %}{{ item.market.sell_price }}{% endif %}</td>
+            <td class="commaSeparated">{% if item.market %}{{ item.market.buy_price }}{% endif %}</td>
+            <td>{% if item.market %}{{ item.market.sell_quantity }}{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <span class="pull-right">{% include "paginator.html" %}</span>
+</div>
+{% endblock %}

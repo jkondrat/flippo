@@ -1,0 +1,12 @@
+{% load filters %}
+{% block paginator %}
+<ul class="pagination pagination-centered">
+    {% for i in paginator.page_range %}
+        {% if i >= items.number|add:-5 and i <= items.number|add:5 %}
+            <li {% if items.number == i %} class="active" {% endif %}><a>{{i}}</a></li>
+        {% elif i == 1 or i == paginator.num_pages or i|modulo:10 %}
+            <li {% if items.number == i %} class="active" {% endif %}><a>{{i}}</a></li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endblock %}
