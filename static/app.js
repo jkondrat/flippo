@@ -96,7 +96,7 @@ $(function() {
         }
     });
 
-    $( ".refresh-item" ).click(function() {
+    $(".refresh-item").click(function() {
         var a = $(this);
         var row = a.parent().parent();
         a.addClass("rotate");
@@ -113,5 +113,9 @@ $(function() {
                 updateAndAnimate(row.find('[data-col="sell_quantity"]'), String(market.sell_quantity));
             }
         });
+    });
+
+    $(".back").click(function() {
+        window.history.go(-1);
     });
 });

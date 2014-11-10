@@ -37,7 +37,7 @@ def refresh_prices(request, ids):
 
 def refresh_all_prices(request):
     response_data = dict()
-    if PriceFetcher.working:
+    if PriceFetcher.get_progress()['working']:
         response_data['result'] = 'busy'
     else:
         PriceFetcher.fetch_all()
@@ -53,9 +53,5 @@ def refresh_all_info(request):
 
 
 def refresh_status(request):
-    response_data = dict()
-    response_data['progress'] = PriceFetcher.progress
-    response_data['curr'] = PriceFetcher.curr
-    response_data['total'] = PriceFetcher.total
-    response_data['working'] = PriceFetcher.working
+    response_data = PriceFetcher.get_progress()
     return HttpResponse(json.dumps(response_data), content_type="application/json")

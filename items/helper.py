@@ -1,6 +1,9 @@
 import json
+import threading
+import urllib
+from django.core import cache
+from django.core.cache import get_cache
 from django.db import transaction
-from pip._vendor.requests.packages import urllib3
 import time
 from items.models import Item, Details, MarketInfo
 
@@ -18,9 +21,8 @@ def get_item_or_none(id):
 
 
 def get_json(url):
-    http = urllib3.PoolManager()
-    r = http.request('GET', url)
-    return json.loads(r.data)
+    r = urllib.urlopen(url).read()
+    return json.loads(r)
 
 
 # prepare urls for fetching (up to 200 ids)
@@ -116,10 +118,35 @@ def parse_price(json_obj):
 
 
 class PriceFetcher:
-    progress = 0
-    curr = 0
-    total = 0
-    working = False
+    cache = get_cache('default')
+
+    @classmethod
+    def reset(cls, total):
+        cls.cache.clear()
+        cls.cache.set('counter', 0)
+        cls.cache.set('progress', 0.0)
+        cls.cache.set('total', total)
+
+    @classmethod
+    def increment_counter(cls, i):
+        cls.cache.set('counter', cls.cache.get('counter') + i)
+        if cls.cache.get('total') > 0:
+            cls.cache.set('progress', cls.cache.get('counter') * 100 / cls.cache.get('total'))
+        else:
+            cls.cache.set('progress', 0.0)
+
+    @classmethod
+    def set_working(cls, working):
+        cls.cache.set('working', working)
+
+    @classmethod
+    def get_progress(cls):
+        data = dict()
+        data['progress'] = cls.cache.get('progress', 0.0)
+        data['curr'] = cls.cache.get('counter', 0)
+        data['total'] = cls.cache.get('total', 0)
+        data['working'] = cls.cache.get('working', False)
+        return data
 
     def fetch_single(self, id):
         url = "http://api.guildwars2.com/v2/commerce/prices/" + str(id)
@@ -135,22 +162,21 @@ class PriceFetcher:
     @transaction.commit_manually
     def fetch(ids):
         urls = prepare_urls('http://api.guildwars2.com/v2/commerce/prices?ids=', ids)
-        PriceFetcher.total = len(ids)
-        PriceFetcher.curr = 0
-        PriceFetcher.progress = 0.0
-        PriceFetcher.working = True
+        PriceFetcher.reset(len(ids))
+        PriceFetcher.set_working(True)
         for url in urls:
             dl = 0.0
             pr = 0.0
+            i = 0
             start = time.time()
             prices = get_json(url)
             dl += time.time() - start
             start = time.time()
             for json_obj in prices:
                 parse_price(json_obj)
-                PriceFetcher.curr += 1
-                PriceFetcher.progress = PriceFetcher.curr * 100 / PriceFetcher.total
+                i += 1
+            PriceFetcher.increment_counter(i)
             pr += time.time() - start
-            #print('fetching prices, dl: ' + str(int(round(dl * 1000))) + ' pr:' + str(int(round(pr * 1000))))
+            print('fetching prices, dl: ' + str(int(round(dl * 1000))) + ' pr:' + str(int(round(pr * 1000))))
             transaction.commit()
-        PriceFetcher.working = False
+        PriceFetcher.set_working(False)

@@ -2,27 +2,31 @@
 {% block title %}Item {{ item.item_id }}{% endblock %}
 
 {% block content %}
+<div class="panel-body">
 {% if item %}
-    <p>{{ item }}</p>
-    <p><img src="{{ item.icon }}"></p>
-    <p>Description: {{ item.description }}</p>
-    <p>Type: {{ item.type }}</p>
-    <p>Rarity: {{ item.rarity }}</p>
-    <p>Level: {{ item.level }}</p>
-    <p>Vendor value: {{ item.vendor_value }}</p>
-    <p>Flags: {{ item.flags }}</p>
-    <p>Game types: {{ item.game_types }}</p>
-    <p>Restrictions: {{ item.restrictions }}
-    <p>Details: {{ item.details }}</p>
-    <p>Profit: {{ item.profit }} bronze ({{ item.profit_percent }}%)</p>
+<ul class="list-group">
+    <li class="list-group-item"><img src="{{ item.icon }}"><b class="m-l">{{ item }}</b>
+        <button class="back btn btn-default pull-right">Back</button></li>
+    <li class="list-group-item">Description: {{ item.description }}</li>
+    <li class="list-group-item">Type: {{ item.type }}</li>
+    <li class="list-group-item">Rarity: {{ item.rarity }}</li>
+    <li class="list-group-item">Level: {{ item.level }}</li>
+    <li class="list-group-item">Vendor value: {{ item.vendor_value }}</li>
+    <li class="list-group-item">Flags: {{ item.flags }}</li>
+    <li class="list-group-item">Game types: {{ item.game_types }}</li>
+    <li class="list-group-item">Restrictions: {{ item.restrictions }}
+    <li class="list-group-item">Profit: {{ item.profit }} bronze ({{ item.profit_percent }}%)</li>
     {% if item.market %}
-        <p>Sell quantity: {{ item.market.sell_quantity }}</p>
-        <p>Buy quantity: {{ item.market.buy_quantity }}</p>
-        <p>Sell price: {{ item.market.sell_price }}</p>
-        <p>Buy price: {{ item.market.buy_price }}</p>
-        <p>Last updated: {{ item.market.last_updated }}</p>
+        <li class="list-group-item">Sell quantity: {{ item.market.sell_quantity }}</li>
+        <li class="list-group-item">Buy quantity: {{ item.market.buy_quantity }}</li>
+        <li class="list-group-item">Sell price: {{ item.market.sell_price }}</li>
+        <li class="list-group-item">Buy price: {{ item.market.buy_price }}</li>
+        <li class="list-group-item">Last updated: {{ item.market.last_updated }}</li>
     {% endif %}
+    <li class="list-group-item">Details: {{ item.details }}</li>
+</ul>
 {% else %}
-    <p>Item not found.</p>
+    <li class="list-group-item">Item not found.</li>
 {% endif %}
+</div>
 {% endblock %}
