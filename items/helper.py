@@ -112,12 +112,19 @@ def parse_price(json_obj):
     item.profit = item.calc_profit()
     item.profit_percent = item.calc_profit_percent()
     item.save()
+    return item
 
 
 class PriceFetcher:
     progress = 0
     curr = 0
     total = 0
+    working = False
+
+    def fetch_single(self, id):
+        url = "http://api.guildwars2.com/v2/commerce/prices/" + str(id)
+        price = get_json(url)
+        return parse_price(price)
 
     @staticmethod
     def fetch_all():
@@ -131,6 +138,7 @@ class PriceFetcher:
         PriceFetcher.total = len(ids)
         PriceFetcher.curr = 0
         PriceFetcher.progress = 0.0
+        PriceFetcher.working = True
         for url in urls:
             dl = 0.0
             pr = 0.0
@@ -145,3 +153,4 @@ class PriceFetcher:
             pr += time.time() - start
             #print('fetching prices, dl: ' + str(int(round(dl * 1000))) + ' pr:' + str(int(round(pr * 1000))))
             transaction.commit()
+        PriceFetcher.working = False

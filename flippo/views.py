@@ -17,6 +17,10 @@ def index(request):
         items_list = items_list.filter(name__icontains=request.GET.get('q', ''))
     if len(request.GET.get('type', '')) > 0:
         items_list = items_list.filter(type__icontains=request.GET.get('type', ''))
+    if len(request.GET.get('rarity', '')) > 0:
+        items_list = items_list.filter(rarity__icontains=request.GET.get('rarity', ''))
+    if len(request.GET.get('level', '')) > 0:
+        items_list = items_list.filter(level=request.GET.get('level', ''))
     if len(request.GET.get('count', '')) > 0:
         try:
             market = MarketInfo.objects.filter(sell_quantity__gte=request.GET.get('count', ''))

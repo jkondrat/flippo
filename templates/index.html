@@ -4,25 +4,35 @@
     <script type="text/javascript">
        var q = "{{ request.GET.q }}";
        var type = "{{ request.GET.type }}";
+       var rarity = "{{ request.GET.rarity }}";
+       var level = "{{ request.GET.level }}";
        var count = "{{ request.GET.count }}";
        var buy_price = "{{ request.GET.buy_price }}";
     </script>
     <form method="GET" class="form-inline" id="filter">
         <div class="input-group">
-            <span>Name:</span>
-            <input name="q" name="q" type="text" class="form-control" value="{{ request.GET.q }}">
+            <span>Name</span>
+            <input name="q" type="text" class="form-control" value="{{ request.GET.q }}">
         </div>
         <div class="input-group">
-            <span>Type:</span>
-            <input name="type" name="type" type="text" class="form-control" value="{{ request.GET.type }}">
+            <span>Type</span>
+            <input name="type" type="text" class="form-control" value="{{ request.GET.type }}">
         </div>
         <div class="input-group">
-            <span>Count higher:</span>
-            <input name="count" name="count" type="text" class="form-control" value="{{ request.GET.count }}">
+            <span>Rarity</span>
+            <input name="rarity" type="text" class="form-control" value="{{ request.GET.rarity }}">
         </div>
         <div class="input-group">
-            <span>Buy price higher (copper):</span>
-            <input id="buy_price" name="buy_price" type="text" class="form-control" value="{{ request.GET.buy_price }}">
+            <span>Level</span>
+            <input name="level" type="text" class="form-control" value="{{ request.GET.level }}">
+        </div>
+        <div class="input-group">
+            <span>Count ></span>
+            <input name="count" type="text" class="form-control" value="{{ request.GET.count }}">
+        </div>
+        <div class="input-group">
+            <span>Buy price in copper ></span>
+            <input id="buy_price" type="text" class="form-control" value="{{ request.GET.buy_price }}">
         </div>
         <span class="input-group-btn">
             <input class="btn btn-primary" type="submit" value="Search">
@@ -34,6 +44,8 @@
         <tr>
             <th>Name</th>
             <th>Type</th>
+            <th>Rarity</th>
+            <th>Level</th>
             <th>Profit</th>
             <th>%</th>
             <th>Sell price</th>
@@ -42,13 +54,16 @@
         </tr>
         {% for item in items %}
         <tr>
-            <td><a href="/items/{{ item.item_id }}/">{{ item }}</a></td>
+            <td><span class="refresh-item glyphicon glyphicon-refresh" data-id="{{ item.item_id }}"></span>
+                <a href="/items/{{ item.item_id }}/">{{ item }}</a></td>
             <td>{{ item.type }}</td>
-            <td class="commaSeparated">{{ item.profit }}</td>
-            <td>{{ item.profit_percent }}</td>
-            <td class="commaSeparated">{% if item.market %}{{ item.market.sell_price }}{% endif %}</td>
-            <td class="commaSeparated">{% if item.market %}{{ item.market.buy_price }}{% endif %}</td>
-            <td>{% if item.market %}{{ item.market.sell_quantity }}{% endif %}</td>
+            <td>{{ item.rarity }}</td>
+            <td>{{ item.level }}</td>
+            <td data-col="profit" class="commaSeparated">{{ item.profit }}</td>
+            <td data-col="profit_percent">{{ item.profit_percent }}</td>
+            <td data-col="sell_price" class="commaSeparated">{% if item.market %}{{ item.market.sell_price }}{% endif %}</td>
+            <td data-col="buy_price" class="commaSeparated">{% if item.market %}{{ item.market.buy_price }}{% endif %}</td>
+            <td data-col="sell_quantity">{% if item.market %}{{ item.market.sell_quantity }}{% endif %}</td>
         </tr>
         {% endfor %}
     </table>
