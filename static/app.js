@@ -64,6 +64,29 @@ function updateAndAnimate(row, value) {
     }
 }
 
+function addToWatchlist() {
+    var s = $(this);
+    $.get("/items/watchlist/add/" + s.attr("data-id") + "/", function (data) {
+        s.removeClass("watchlist-add");
+        s.removeClass("glyphicon-ok");
+        s.addClass("watchlist-remove");
+        s.addClass("glyphicon-remove");
+        s.unbind('click').click(removeFromWatchlist);
+    });
+}
+
+function removeFromWatchlist() {
+    var s = $(this);
+    $.get("/items/watchlist/remove/" + s.attr("data-id") + "/", function (data) {
+        s.removeClass("watchlist-remove");
+        s.removeClass("glyphicon-remove");
+        s.addClass("watchlist-add");
+        s.addClass("glyphicon-ok");
+        s.unbind('click').click(addToWatchlist);
+    });
+}
+
+var fetchingWatchlist = false;
 $(function() {
     nodes = document.querySelectorAll(".commaSeparated");
     for (var i = 0; i < nodes.length; i++) {
@@ -115,7 +138,27 @@ $(function() {
         });
     });
 
+    $( "#refresh-watchlist" ).click(function() {
+        if (!fetchingWatchlist) {
+            fetchingWatchlist = true;
+            $(".refresh-watchlist").addClass("rotate");
+            $.get("/items/watchlist/refresh/", function (data) {
+                $(".refresh-watchlist").removeClass("rotate");
+                fetchingWatchlist = false;
+                console.log(data);
+                if (data.result == "ok") {
+                    location.reload();
+                }
+            });
+        }
+    });
+
+    $(".watchlist-add").click(addToWatchlist);
+
+    $(".watchlist-remove").click(removeFromWatchlist);
+
     $(".back").click(function() {
         window.history.go(-1);
     });
+
 });

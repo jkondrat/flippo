@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+    {% if request.GET.next %}<div class="alert alert-warning" role="alert">Login required</div>{% endif %}
     <div class="panel-body">
         <form method="POST" id="filter">
             {% csrf_token %}

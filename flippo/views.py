@@ -9,7 +9,7 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import redirect
 from django.template import loader, RequestContext
 from items.helper import fetch_all_info, PriceFetcher, get_flippable
-from items.models import Item, MarketInfo
+from items.models import Item, MarketInfo, WatchList
 
 
 class RegisterView(TemplateView):
@@ -99,9 +99,16 @@ def index(request):
     except EmptyPage:
         items = paginator.page(paginator.num_pages)
 
+    try:
+        watchlist = WatchList.objects.get(user=request.user)
+        watchlist_items = watchlist.items.all()
+    except:
+        watchlist_items = []
+
     context = RequestContext(request, {
         'paginator': paginator,
         'items': items,
-        'request': request
+        'request': request,
+        'watchlist_items': watchlist_items
     })
     return HttpResponse(template.render(context))

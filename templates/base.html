@@ -18,10 +18,9 @@
         <ol class="breadcrumb">
             <li><a href="/">Home</a></li>
             <li><a href="/items/watchlist/">Watchlist</a></li>
-            <li><a href="#" id="refresh-prices">
-            <i class='refresh-all glyphicon glyphicon-refresh'></i> Refresh all prices </a>
-               <span id="progress"></span></li>
             {% if user.is_authenticated %}
+                <li><a href="#" id="refresh-watchlist">
+                <i class='refresh-watchlist glyphicon glyphicon-refresh'></i> Refresh watchlist </a></li>
                 <li class="pull-right"><a href = "/logout/">Logout</a></li>
                 <li class="pull-right">{{ user.username }}</li>
                 {% if user.is_superuser %}
@@ -31,6 +30,9 @@
                 <li class="pull-right"><a href="/login/">Login</a></li>
                 <li class="pull-right"><a href="/register/">Register</a></li>
             {% endif %}
+            <li><a href="#" id="refresh-prices">
+            <i class='refresh-all glyphicon glyphicon-refresh'></i> Refresh all prices </a>
+               <span id="progress"></span></li>
         </ol>
         {% endblock %}
     </div>

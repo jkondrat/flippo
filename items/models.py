@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -58,3 +59,8 @@ class Item(models.Model):
         if self.market is not None and self.market.buy_price > 0:
             return round((self.calc_profit() * 100.0) / (self.market.buy_price + 1), 2)
         return 0
+
+
+class WatchList(models.Model):
+    user = models.ForeignKey(User)
+    items = models.ManyToManyField(Item)

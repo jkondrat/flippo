@@ -63,7 +63,13 @@
             <td data-col="profit_percent">{{ item.profit_percent }}</td>
             <td data-col="sell_price" class="commaSeparated">{% if item.market %}{{ item.market.sell_price }}{% endif %}</td>
             <td data-col="buy_price" class="commaSeparated">{% if item.market %}{{ item.market.buy_price }}{% endif %}</td>
-            <td data-col="sell_quantity">{% if item.market %}{{ item.market.sell_quantity }}{% endif %}</td>
+            <td data-col="sell_quantity">{% if item.market %}{{ item.market.sell_quantity }}{% endif %}
+                {% if item in watchlist_items %}
+                    <span class="watchlist-remove pull-right glyphicon glyphicon-remove" data-id="{{ item.item_id }}"></span>
+                {% else %}
+                    <span class="watchlist-add pull-right glyphicon glyphicon-ok" data-id="{{ item.item_id }}"></span>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>

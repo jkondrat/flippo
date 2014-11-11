@@ -154,13 +154,10 @@ class PriceFetcher:
         return parse_price(price)
 
     @staticmethod
+    @transaction.commit_manually
     def fetch_all():
         ids = get_json('https://api.guildwars2.com/v2/commerce/prices/')
-        PriceFetcher.fetch(ids)
-
-    @staticmethod
-    @transaction.commit_manually
-    def fetch(ids):
+        PriceFetcher().fetch(ids)
         urls = prepare_urls('http://api.guildwars2.com/v2/commerce/prices?ids=', ids)
         PriceFetcher.reset(len(ids))
         PriceFetcher.set_working(True)
@@ -180,3 +177,12 @@ class PriceFetcher:
             print('fetching prices, dl: ' + str(int(round(dl * 1000))) + ' pr:' + str(int(round(pr * 1000))))
             transaction.commit()
         PriceFetcher.set_working(False)
+
+    @transaction.commit_manually
+    def fetch(self, ids):
+        urls = prepare_urls('http://api.guildwars2.com/v2/commerce/prices?ids=', ids)
+        for url in urls:
+            prices = get_json(url)
+            for json_obj in prices:
+                parse_price(json_obj)
+            transaction.commit()
