@@ -25,7 +25,7 @@ class RegisterView(TemplateView):
             username = request.POST['username']
             password = request.POST['password']
             email = request.POST['email']
-            user = User.objects.create_user(username, password, email)
+            user = User.objects.create_user(username, email, password)
 
             if user:
                 return redirect(reverse_lazy('login') + "?msg=Registered. You can now log in.")
