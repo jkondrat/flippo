@@ -157,7 +157,6 @@ class PriceFetcher:
     @transaction.commit_manually
     def fetch_all():
         ids = get_json('https://api.guildwars2.com/v2/commerce/prices/')
-        PriceFetcher().fetch(ids)
         urls = prepare_urls('http://api.guildwars2.com/v2/commerce/prices?ids=', ids)
         PriceFetcher.reset(len(ids))
         PriceFetcher.set_working(True)
