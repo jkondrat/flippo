@@ -36,7 +36,7 @@ class WatchListView(UserMixin, TemplateView):
             watchlist = WatchList()
             watchlist.user = self.request.user
             watchlist.save()
-        context['items'] = watchlist.items.all()
+        context['items'] = watchlist.items.all().order_by('-profit_percent')
         context['request'] = self.request
         return context
 
