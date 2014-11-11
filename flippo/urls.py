@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from django.core.cache import get_cache
 from flippo import views
+from flippo.views import LoginView, LogoutView, RegisterView
 
 urlpatterns = patterns('',
     # Examples:
@@ -11,6 +11,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^items/', include('items.urls')),
     url(r'^$', views.index, name='index'),
+    url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$', LogoutView, name='logout'),
+    url(r'^register/$', RegisterView.as_view(), name='register'),
 
-    get_cache('default').clear()
 )

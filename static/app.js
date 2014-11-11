@@ -34,7 +34,7 @@ function setFetching(f) {
 
 var timer;
 function updateProgressBar(init) {
-$.get("items/refresh/status/", function (data) {
+$.get("/items/refresh/status/", function (data) {
     console.log(data);
     if(init || data.working && data.working == true) {
         setFetching(true);
@@ -76,7 +76,7 @@ $(function() {
     updateProgressBar();
     $( "#refresh-prices" ).click(function() {
         if (!fetching) {
-            $.get("items/refresh/all-prices/", function (data) {
+            $.get("/items/refresh/all-prices/", function (data) {
                 //updateProgressBar();
                 console.log(data);
                 if (data.result == "ok") {
@@ -100,7 +100,7 @@ $(function() {
         var a = $(this);
         var row = a.parent().parent();
         a.addClass("rotate");
-        $.get("items/refresh/price/" + a.attr("data-id") + "/", function (data) {
+        $.get("/items/refresh/price/" + a.attr("data-id") + "/", function (data) {
             //updateProgressBar();
             if (data.result && data.result == "ok") {
                 var item = JSON.parse(data.item)[0].fields;

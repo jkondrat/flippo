@@ -4,7 +4,17 @@ from django.http import HttpResponse
 
 # Create your views here.
 from django.template import loader, RequestContext
+from django.views.generic import TemplateView
 from items.helper import get_item_or_none, fetch_all_info, PriceFetcher
+
+
+class WatchListView(TemplateView):
+    template_name = "watchlist.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(TemplateView, self).get_context_data(**kwargs)
+        context['request'] = self.request
+        return context
 
 
 def index(request):
@@ -37,11 +47,12 @@ def refresh_prices(request, ids):
 
 def refresh_all_prices(request):
     response_data = dict()
-    if PriceFetcher.get_progress()['working']:
-        response_data['result'] = 'busy'
-    else:
-        PriceFetcher.fetch_all()
-        response_data['result'] = 'ok'
+    if request.user.is_authenticated() and request.user.is_superuser():
+        if PriceFetcher.get_progress()['working']:
+            response_data['result'] = 'busy'
+        else:
+            PriceFetcher.fetch_all()
+            response_data['result'] = 'ok'
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 

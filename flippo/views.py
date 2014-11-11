@@ -1,10 +1,66 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
+from django.views.generic.base import TemplateView
 
 # Create your views here.
+from django.shortcuts import redirect
 from django.template import loader, RequestContext
 from items.helper import fetch_all_info, PriceFetcher, get_flippable
 from items.models import Item, MarketInfo
+
+
+class RegisterView(TemplateView):
+    template_name = "register.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(TemplateView, self).get_context_data(**kwargs)
+        context['request'] = self.request
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated() and request.user.is_superuser:
+            username = request.POST['username']
+            password = request.POST['password']
+            email = request.POST['email']
+            user = User.objects.create_user(username, password, email)
+
+            if user:
+                return redirect(reverse_lazy('login') + "?msg=Registered. You can now log in.")
+            else:
+                return redirect(reverse_lazy('register'))
+        else:
+            return redirect(reverse_lazy('register') + "?error=Registration is currently disabled.")
+
+
+class LoginView(TemplateView):
+    template_name = "login.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(TemplateView, self).get_context_data(**kwargs)
+        context['request'] = self.request
+        return context
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect(reverse_lazy('index'))
+            else:
+                return redirect(reverse_lazy('login') + '?error=disabled account')
+        else:
+            return redirect(reverse_lazy('login') + '?error=Invalid credentials')
+
+
+def LogoutView(request):
+    logout(request)
+    return redirect(reverse_lazy('index'))
 
 
 def index(request):
