@@ -117,6 +117,8 @@ def refresh_all_prices(request):
         else:
             PriceFetcher.fetch_all()
             response_data['result'] = 'ok'
+    else:
+        response_data['result'] = 'unauthorized'
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 

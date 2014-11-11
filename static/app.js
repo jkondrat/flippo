@@ -101,9 +101,11 @@ $(function() {
         if (!fetching) {
             $.get("/items/refresh/all-prices/", function (data) {
                 //updateProgressBar();
-                console.log(data);
                 if (data.result == "ok") {
                     location.reload();
+                }
+                else if (data.result == "unauthorized") {
+                    window.location.href = "/login/?next=/items/watchlist/";
                 }
             });
             updateProgressBar(true);
